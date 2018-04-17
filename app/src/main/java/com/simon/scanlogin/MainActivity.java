@@ -1,16 +1,22 @@
 package com.simon.scanlogin;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -28,6 +34,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            AndPermission.with(this);
+
+            AndPermission.with(this)
+                    .permission(Permission.WRITE_EXTERNAL_STORAGE, Permission.CAMERA)
+                    .rationale(new DefaultRationale())
+                    .onGranted(new Action() {
+                        @Override
+                        public void onAction(List<String> permissions) {
+                            Log.i(TAG, "已获得权限");
+                            Toast.makeText(MainActivity.this, "已获得权限", Toast.LENGTH_SHORT).show();
+                        }
+                    }).onDenied(new Action() {
+                @Override
+                public void onAction(List<String> permissions) {
+                    Log.i(TAG, "没有权限");
+                    if(AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)){
+                        new PermissionSetting(MainActivity.this).showSetting(permissions);
+                    }
+                }
+            })
+                    .start();
+        }
+
         button = findViewById(R.id.button);
 
         button.setOnClickListener(new View.OnClickListener() {

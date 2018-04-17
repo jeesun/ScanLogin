@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ScanLogin</string>
+    <string name="message_permission_rationale">需要以下权限：%1$s</string>
+    <string name="title_dialog">弹框标题</string>
+    <string name="resume">重新</string>
+    <string name="cancel">取消</string>
+    <string name="message_permission_always_failed">总是不给权限：%1$s</string>
+    <string name="setting">设置</string>
+    <string name="no">不要</string>
 </resources>
