@@ -14,6 +14,6 @@
         android:layout_margin="@dimen/button_margin"
         android:background="@drawable/btn_selector"
         android:textColor="@android:color/white"
-        android:text="退出"
+        android:text="@string/logout"
         android:textSize="@dimen/button_text_size"/>
 </RelativeLayout>

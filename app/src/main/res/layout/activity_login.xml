@@ -38,7 +38,7 @@
             android:background="@drawable/btn_selector"
             android:textColor="@android:color/white"
             android:textSize="@dimen/button_text_size"
-            android:text="登录" />
+            android:text="@string/login" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="加载中"
+            android:text="@string/loading"
             android:textAlignment="center" />
     </RelativeLayout>
 

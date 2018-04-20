@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="网页登录确认"/>
+        android:text="@string/web_login_check"/>
 
     <Button
         android:id="@+id/check_login"
@@ -23,7 +23,7 @@
         android:background="@drawable/btn_selector"
         android:textColor="@android:color/white"
         android:textSize="@dimen/button_text_size"
-        android:text="确认登录" />
+        android:text="@string/check_login" />
 
     <Button
         android:id="@+id/cancel_login"
@@ -35,5 +35,5 @@
         android:background="@drawable/btn_selector"
         android:textColor="@android:color/white"
         android:textSize="@dimen/button_text_size"
-        android:text="取消登录" />
+        android:text="@string/cancel_login" />
 </RelativeLayout>
