@@ -5,8 +5,11 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.simon.scanlogin.R;
@@ -30,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsername, etPassword;
     private Button btnLogin;
+    private RelativeLayout rlProgressbarWrapper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +42,14 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.username);
         etPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.login);
+        rlProgressbarWrapper = findViewById(R.id.progressbar_wrapper);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                rlProgressbarWrapper.setVisibility(View.VISIBLE);
+                //模仿ProgressDialog出现时，用户无法与界面继续交互的效果
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
 
@@ -63,8 +71,15 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putInt("expires_in", loginInfo.getToken().getExpires_in());
                         editor.putString("username", loginInfo.getUserInfo().getUsername());
                         editor.apply();
+
+                        rlProgressbarWrapper.setVisibility(View.GONE);
+                        //恢复用户与界面的交互
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
+
+                        finish();
                     }
 
                     @Override

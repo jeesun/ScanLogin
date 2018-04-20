@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 矩形的圆角弧度 -->
+    <corners android:radius="6dp" />
+    <!-- 矩形的填充色 -->
+    <solid android:color="#ffffff" />
+    <padding
+        android:left="6dp"
+        android:right="6dp"
+        android:top="6dp"
+        android:bottom="6dp"/>
+
+    <!-- 矩形边框 -->
+    <stroke
+        android:width="1dp"
+        android:color="#e6e6e6" />
+</shape>

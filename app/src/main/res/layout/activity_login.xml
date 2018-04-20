@@ -1,35 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_centerInParent="true"
+    android:padding="6dp"
     tools:context=".activity.LoginActivity">
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="18860902711" />
+        android:layout_centerInParent="true">
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="18860902711" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:text="1234567890c"/>
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:text="1234567890c"/>
 
-    <Button
-        android:id="@+id/login"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
-        android:layout_margin="@dimen/button_margin"
-        android:background="@drawable/btn_selector"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/button_text_size"
-        android:text="登录" />
-</LinearLayout>
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@id/password"
+            android:layout_margin="@dimen/button_margin"
+            android:background="@drawable/btn_selector"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/button_text_size"
+            android:text="登录" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/progressbar_wrapper"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/progress_bg"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="?android:attr/progressBarStyle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="加载中"
+            android:textAlignment="center" />
+    </RelativeLayout>
+
+</RelativeLayout>
