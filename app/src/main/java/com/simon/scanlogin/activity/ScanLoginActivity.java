@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -32,6 +33,8 @@ public class ScanLoginActivity extends AppCompatActivity {
     private static final String TAG = ScanLoginActivity.class.getName();
     @BindView(R.id.check_login) Button btnCheckLogin;
     @BindView(R.id.cancel_login) Button btnCancelLogin;
+    @BindView(R.id.login_web_wrapper)
+    RelativeLayout rlLoginWebWrapper;
     private String sid;
     private String username;
     private String token;
@@ -106,7 +109,9 @@ public class ScanLoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
                 Log.i(TAG, response.body().toString());
-                //Toast.makeText(MainActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                if(200 == response.body().getCode()){
+                    rlLoginWebWrapper.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override

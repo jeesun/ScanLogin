@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:padding="6dp"
+    android:padding="@dimen/page_margin"
     tools:context=".activity.LoginActivity">
 
     <RelativeLayout

@@ -15,4 +15,5 @@
     <string name="web_login_check">网页登录确认</string>
     <string name="check_login">确认登录</string>
     <string name="cancel_login">取消登录</string>
+    <string name="login_succeed">登录成功</string>
 </resources>
