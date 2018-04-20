@@ -26,6 +26,10 @@
     <Button
         android:id="@+id/login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/button_height"
+        android:layout_margin="@dimen/button_margin"
+        android:background="@drawable/btn_selector"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/button_text_size"
         android:text="登录" />
 </LinearLayout>

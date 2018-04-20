@@ -30,10 +30,12 @@ public class LaunchActivity extends AppCompatActivity {
             //跳转到登录界面
             Intent intent = new Intent(LaunchActivity.this, LoginActivity.class);
             startActivity(intent);
+            finish();
         }else{
             //跳转到主界面
             Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 }

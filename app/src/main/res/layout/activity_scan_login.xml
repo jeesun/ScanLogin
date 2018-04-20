@@ -15,17 +15,25 @@
 
     <Button
         android:id="@+id/check_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@id/web_login_check"
         android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/button_height"
+        android:layout_margin="@dimen/button_margin"
+        android:background="@drawable/btn_selector"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/button_text_size"
         android:text="确认登录" />
 
     <Button
         android:id="@+id/cancel_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@id/check_login"
         android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/button_height"
+        android:layout_margin="@dimen/button_margin"
+        android:background="@drawable/btn_selector"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/button_text_size"
         android:text="取消登录" />
 </RelativeLayout>
