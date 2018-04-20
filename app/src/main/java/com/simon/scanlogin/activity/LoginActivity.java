@@ -21,6 +21,7 @@ import com.simon.scanlogin.util.LogUtil;
 
 import java.util.Date;
 
+import butterknife.BindView;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,18 +32,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
 
-    private EditText etUsername, etPassword;
-    private Button btnLogin;
-    private RelativeLayout rlProgressbarWrapper;
+    @BindView(R.id.username) EditText etUsername;
+    @BindView(R.id.password) EditText etPassword;
+    @BindView(R.id.login) Button btnLogin;
+    @BindView(R.id.progressbar_wrapper) RelativeLayout rlProgressbarWrapper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        etUsername = findViewById(R.id.username);
-        etPassword = findViewById(R.id.password);
-        btnLogin = findViewById(R.id.login);
-        rlProgressbarWrapper = findViewById(R.id.progressbar_wrapper);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -24,18 +24,18 @@ import com.yzq.zxinglibrary.common.Constant;
 
 import java.util.List;
 
+import butterknife.BindView;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
     private int REQUEST_CODE_SCAN = 111;
 
-    private Button btnLogout;
+    @BindView(R.id.logout) Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        btnLogout = findViewById(R.id.logout);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onAction(List<String> permissions) {
                             Log.i(TAG, "已获得权限");
-                            Toast.makeText(MainActivity.this, "已获得权限", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, "已获得权限", Toast.LENGTH_SHORT).show();
                         }
                     }).onDenied(new Action() {
                 @Override

@@ -18,6 +18,7 @@ import com.simon.scanlogin.domain.ResultMsg;
 
 import java.util.Date;
 
+import butterknife.BindView;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScanLoginActivity extends AppCompatActivity {
     private static final String TAG = ScanLoginActivity.class.getName();
-    private Button btnCheckLogin, btnCancelLogin;
+    @BindView(R.id.check_login) Button btnCheckLogin;
+    @BindView(R.id.cancel_login) Button btnCancelLogin;
     private String sid;
     private String username;
     private String token;
@@ -38,9 +40,6 @@ public class ScanLoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         sid = intent.getStringExtra("sid");
         Log.i(TAG, "sid=" + sid);
-
-        btnCheckLogin = findViewById(R.id.check_login);
-        btnCancelLogin = findViewById(R.id.cancel_login);
 
         btnCheckLogin.setOnClickListener(new View.OnClickListener() {
             @Override
