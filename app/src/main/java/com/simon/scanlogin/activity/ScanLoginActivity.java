@@ -1,4 +1,4 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.simon.scanlogin.R;
+import com.simon.scanlogin.interfaces.RequestServes;
+import com.simon.scanlogin.config.AppConfig;
+import com.simon.scanlogin.domain.AccessToken;
+import com.simon.scanlogin.domain.ResultMsg;
 
 import java.util.Date;
 

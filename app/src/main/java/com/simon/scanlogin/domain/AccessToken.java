@@ -1,4 +1,4 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.domain;
 
 /**
  * Created by simon on 2017/2/22.

@@ -1,7 +1,6 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +12,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.simon.scanlogin.R;
+import com.simon.scanlogin.domain.LoginCode;
+import com.simon.scanlogin.permission.DefaultRationale;
+import com.simon.scanlogin.permission.PermissionSetting;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;

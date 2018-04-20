@@ -1,9 +1,10 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.permission;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
 
+import com.simon.scanlogin.R;
 import com.yanzhenjie.alertdialog.AlertDialog;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.Rationale;

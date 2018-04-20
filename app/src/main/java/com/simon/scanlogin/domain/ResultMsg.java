@@ -1,4 +1,4 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.domain;
 
 public class ResultMsg {
     private Integer code;

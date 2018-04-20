@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanLoginActivity">
+    tools:context=".activity.ScanLoginActivity">
 
     <TextView
         android:id="@+id/web_login_check"

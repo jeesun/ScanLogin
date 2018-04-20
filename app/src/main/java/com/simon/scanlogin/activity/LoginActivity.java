@@ -1,15 +1,20 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSON;
+import com.simon.scanlogin.R;
+import com.simon.scanlogin.interfaces.RequestServes;
+import com.simon.scanlogin.config.AppConfig;
+import com.simon.scanlogin.domain.LoginInfo;
+import com.simon.scanlogin.domain.ResultMsg;
+import com.simon.scanlogin.util.LogUtil;
 
 import java.util.Date;
 

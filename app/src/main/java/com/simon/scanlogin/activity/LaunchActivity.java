@@ -1,20 +1,11 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.alibaba.fastjson.JSON;
-
-import java.util.Date;
-
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.simon.scanlogin.R;
 
 public class LaunchActivity extends AppCompatActivity {
 

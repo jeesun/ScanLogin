@@ -1,4 +1,4 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.util;
 
 import android.util.Log;
 

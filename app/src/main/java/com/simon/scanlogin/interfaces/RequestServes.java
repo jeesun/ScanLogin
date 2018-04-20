@@ -1,4 +1,6 @@
-package com.simon.scanlogin;
+package com.simon.scanlogin.interfaces;
+
+import com.simon.scanlogin.domain.ResultMsg;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -10,8 +12,8 @@ public interface RequestServes {
     //app扫描网页二维码登录
     @POST("/api/qrCodes/loginByQrCode")
     Call<ResultMsg> loginByQrCode(@Query("username")String username,
-                               @Query("access_token")String access_token,
-                               @Query("sid")String sid);
+                                  @Query("access_token")String access_token,
+                                  @Query("sid")String sid);
 
     //账号密码登录
     @GET("/api/oauthUsers/{phone}/{password}")
