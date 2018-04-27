@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                RequestWithToken requestServes = RequestServesFactory.getInstance().createRequestWithToken();
+                RequestWithToken requestServes = RequestServesFactory.getInstance().createRequest(RequestWithToken.class);
                 try {
                     Call<ResultMsg> call = requestServes.getUser(ReadWritePref.getInstance().getStr("access_token"));
                     call.enqueue(new Callback<ResultMsg>() {
