@@ -3,19 +3,24 @@ package com.simon.scanlogin.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.simon.scanlogin.R;
 import com.simon.scanlogin.domain.LoginCode;
+import com.simon.scanlogin.domain.ResultMsg;
+import com.simon.scanlogin.exception.UserNotLoginException;
+import com.simon.scanlogin.factory.RequestServesFactory;
+import com.simon.scanlogin.interfaces.RequestWithToken;
 import com.simon.scanlogin.permission.DefaultRationale;
 import com.simon.scanlogin.permission.PermissionSetting;
+import com.simon.scanlogin.util.ReadWritePref;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -27,6 +32,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
@@ -63,6 +71,39 @@ public class MainActivity extends AppCompatActivity {
             })
                     .start();
         }
+
+        //测试
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestWithToken requestServes = RequestServesFactory.getInstance().createRequestWithToken();
+                try {
+                    Call<ResultMsg> call = requestServes.getUser(ReadWritePref.getInstance().getStr("access_token"));
+                    call.enqueue(new Callback<ResultMsg>() {
+                        @Override
+                        public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
+                            if (response.isSuccessful()){
+                                Log.i(TAG, response.body().toString());
+                            }else{
+                                Log.i(TAG, response.errorBody().toString());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResultMsg> call, Throwable t) {
+                            Log.i(TAG, t.toString());
+                        }
+                    });
+                } catch (UserNotLoginException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        }).start();
+
     }
 
     @Override
