@@ -4,12 +4,15 @@ import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSON;
+import com.simon.scanlogin.base.BaseApplication;
 import com.simon.scanlogin.config.AppConfig;
 import com.simon.scanlogin.domain.AccessToken;
 import com.simon.scanlogin.domain.InvalidToken;
+import com.simon.scanlogin.exception.NoNetworkException;
 import com.simon.scanlogin.interfaces.OauthServesCall;
 import com.simon.scanlogin.util.CheckTokenIsValid;
 import com.simon.scanlogin.util.LogUtil;
+import com.simon.scanlogin.util.NetUtil;
 import com.simon.scanlogin.util.ReadWritePref;
 import com.simon.scanlogin.util.ServiceGenerator;
 
@@ -50,9 +53,13 @@ public class ProxyHandler implements InvocationHandler {
         // 如果refresh_token失效，引导到登录页面重新登陆。
         //引导到登录页面，需要将得到的access_token和refresh_token写入SharedPreferences。
         //new CheckTokenTask().execute();
+        if (!NetUtil.isNetworkConnected(BaseApplication.getInstance())){
+            throw new NoNetworkException("已断开网络连接");
+        }
         String access_token = args[0].toString();
         LogUtil.e(TAG, "args[0]=" + args[0].toString());
         if (!CheckTokenIsValid.isValid(access_token)){
+            LogUtil.e(TAG, "invalid access_token");
             String refresh_token = ReadWritePref.getInstance().getStr("refresh_token");
 
             OauthServesCall requestServes = new ServiceGenerator(AppConfig.OAUTH_BASIC_URL).createService(OauthServesCall.class, "clientIdPassword", "secret");

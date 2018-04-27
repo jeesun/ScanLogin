@@ -21,7 +21,7 @@ public class CheckTokenIsValid {
             LogUtil.e(TAG, "用户未登录");
             throw new UserNotLoginException();
         }else if(!"".equals(access_token) && !"".equals(refresh_token) && -1 != timestamp && -1 != expires_in){
-            if(expires_in > (System.currentTimeMillis()-timestamp)/1000 + 60){
+            if(expires_in < (System.currentTimeMillis()-timestamp)/1000 + 60){
                 LogUtil.e(TAG, "access_token过期");
                 return false;
             }else{

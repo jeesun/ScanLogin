@@ -2,6 +2,7 @@ package com.simon.scanlogin.interfaces;
 
 
 import com.simon.scanlogin.domain.ResultMsg;
+import com.simon.scanlogin.exception.NoNetworkException;
 import com.simon.scanlogin.exception.UserNotLoginException;
 
 import retrofit2.Call;
@@ -14,5 +15,5 @@ import retrofit2.http.Query;
 
 public interface RequestWithToken {
     @GET("/api/users")
-    Call<ResultMsg> getUser(@Query("access_token") String access_token)  throws UserNotLoginException;
+    Call<ResultMsg> getUser(@Query("access_token") String access_token)  throws UserNotLoginException, NoNetworkException;
 }
