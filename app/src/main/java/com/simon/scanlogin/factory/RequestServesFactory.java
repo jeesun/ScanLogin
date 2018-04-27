@@ -1,8 +1,6 @@
 package com.simon.scanlogin.factory;
 
 import com.simon.scanlogin.config.AppConfig;
-import com.simon.scanlogin.interfaces.RequestServes;
-import com.simon.scanlogin.interfaces.RequestWithToken;
 import com.simon.scanlogin.proxy.ApiServiceProxy;
 import com.simon.scanlogin.proxy.ProxyHandler;
 
@@ -20,22 +18,34 @@ public class RequestServesFactory {
     private Retrofit retrofit;
 
     private RequestServesFactory(){
-        retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.OAUTH_BASIC_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
+
     }
 
-    public static RequestServesFactory getInstance(){
+    public static synchronized RequestServesFactory getInstance(){
         if(null == requestServesFactory){
             requestServesFactory = new RequestServesFactory();
         }
         return requestServesFactory;
     }
 
+    @Deprecated
     public <T> T createRequest(Class<T> tClass){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(AppConfig.OAUTH_BASIC_URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        return new ApiServiceProxy(retrofit, new ProxyHandler()).getProxy(tClass);
+    }
+
+    public <T> T createRequest(String baseUrl, Class<T> tClass){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(AppConfig.baseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
         return new ApiServiceProxy(retrofit, new ProxyHandler()).getProxy(tClass);
     }
 }
