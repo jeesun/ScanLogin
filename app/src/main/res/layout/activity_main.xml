@@ -11,8 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:layout_above="@+id/logout"
+        android:layout_above="@+id/get_user_info"
         android:text="TextView" />
+
+    <Button
+        android:id="@+id/get_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_above="@+id/logout"
+        android:layout_margin="@dimen/button_margin"
+        android:background="@drawable/btn_selector"
+        android:textColor="@android:color/white"
+        android:text="获取用户信息"
+        android:textSize="@dimen/button_text_size"/>
 
     <Button
         android:id="@+id/logout"
