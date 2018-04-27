@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -19,19 +20,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    public static final String API_BASE_URL = AppConfig.OAUTH_BASIC_URL;
+    public static final String API_BASE_URL = AppConfig.baseUrl;
 
-    private static OkHttpClient httpClient;
-    private static Retrofit.Builder builder =
-            new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
+    private OkHttpClient httpClient;
+    private Retrofit.Builder builder;
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public ServiceGenerator(String baseUrl) {
+        this.builder = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    public <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, null, null);
     }
 
-    public static <S> S createService(Class<S> serviceClass, String username, String password) {
+    public <S> S createService(Class<S> serviceClass, String username, String password) {
         if (username != null && password != null) {
             String credentials = username + ":" + password;
             final String basic =

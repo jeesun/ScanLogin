@@ -28,6 +28,9 @@ dependencies {
 
     implementation 'com.github.yuzhiqiang1993:zxing:2.1.6'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    implementation 'io.reactivex:rxjava:1.2.6'
+    implementation 'io.reactivex:rxandroid:1.2.1'
     implementation 'com.alibaba:fastjson:1.2.41'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

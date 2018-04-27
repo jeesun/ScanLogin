@@ -5,6 +5,7 @@ import com.simon.scanlogin.domain.AccessToken;
 import retrofit2.Call;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import rx.Observable;
 
 /**
  * oauth接口
@@ -23,7 +24,7 @@ public interface OauthServes {
      * @return
      */
     @POST("/oauth/token")
-    Call<AccessToken> getToken(
+    Observable<AccessToken> getToken(
             @Query("grant_type") String grantType,
             @Query("username") String username,
             @Query("password") String password);
@@ -35,7 +36,7 @@ public interface OauthServes {
      * @return
      */
     @POST("/oauth/token")
-    Call<AccessToken> getToken(
+    Observable<AccessToken> getToken(
             @Query("grant_type") String grantType,
             @Query("refresh_token") String refresh_token
     );

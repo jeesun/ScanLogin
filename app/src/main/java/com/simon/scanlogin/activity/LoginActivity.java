@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSON;
 import com.simon.scanlogin.R;
 import com.simon.scanlogin.domain.AccessToken;
 import com.simon.scanlogin.domain.InvalidToken;
+import com.simon.scanlogin.impl.RetryWithDelay;
 import com.simon.scanlogin.interfaces.OauthServes;
 import com.simon.scanlogin.interfaces.RequestServes;
 import com.simon.scanlogin.config.AppConfig;
@@ -27,6 +28,7 @@ import com.simon.scanlogin.util.ServiceGenerator;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +39,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.Scheduler;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
@@ -103,49 +111,51 @@ public class LoginActivity extends AppCompatActivity {
                 LogUtil.e(TAG, t.getLocalizedMessage());
             }
         });*/
-        OauthServes oauthServes = ServiceGenerator.createService(OauthServes.class, "clientIdPassword", "secret");
-        Call<AccessToken> call = oauthServes.getToken("password", username, password);
-        call.enqueue(new Callback<AccessToken>() {
-            @Override
-            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
-                rlProgressbarWrapper.setVisibility(View.GONE);
-                //恢复用户与界面的交互
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        OauthServes oauthServes = new ServiceGenerator(AppConfig.OAUTH_BASIC_URL).createService(OauthServes.class, "clientIdPassword", "secret");
+        oauthServes.getToken("password", username, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWithDelay(3, 3000))
+                .subscribe(new Subscriber<AccessToken>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.i(TAG, "onCompleted");
 
-                if(response.isSuccessful()){
-                    LogUtil.i(TAG, response.body().toString());
-                    AccessToken accessToken = response.body();
-                    SharedPreferences spf = getSharedPreferences("data", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = spf.edit();
-                    editor.putBoolean("firstLaunch", false);
-                    editor.putString("access_token", accessToken.getAccess_token());
-                    editor.putString("refresh_token", accessToken.getRefresh_token());
-                    editor.putLong("date", new Date().getTime());
-                    editor.putInt("expires_in", accessToken.getExpires_in());
-                    editor.apply();
-
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-
-                    finish();
-                }else{
-                    LogUtil.e(TAG, "failed");
-                    try {
-                        InvalidToken invalidToken = JSON.parseObject(response.errorBody().string(), InvalidToken.class);
-                        LogUtil.e(TAG, invalidToken.toString());
-                        Toast.makeText(LoginActivity.this, invalidToken.getError_description(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        LogUtil.e(TAG, "e=" + e.getMessage());
-                        LogUtil.e(TAG, "e=" + e.getLocalizedMessage());
+                        rlProgressbarWrapper.setVisibility(View.GONE);
+                        //恢复用户与界面的交互
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<AccessToken> call, Throwable t) {
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtil.i(TAG, "用户名或者密码错误，或者账号被封");
 
-            }
-        });
+                        rlProgressbarWrapper.setVisibility(View.GONE);
+                        //恢复用户与界面的交互
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
+
+                    @Override
+                    public void onNext(AccessToken accessToken) {
+                        LogUtil.i(TAG, "onNext");
+                        rlProgressbarWrapper.setVisibility(View.GONE);
+                        //恢复用户与界面的交互
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                        SharedPreferences spf = getSharedPreferences("data", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = spf.edit();
+                        editor.putBoolean("firstLaunch", false);
+                        editor.putString("access_token", accessToken.getAccess_token());
+                        editor.putString("refresh_token", accessToken.getRefresh_token());
+                        editor.putLong("token_request_time", new Date().getTime());
+                        editor.putInt("expires_in", accessToken.getExpires_in());
+                        editor.apply();
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+
+                        finish();
+                    }
+                });
     }
 }
