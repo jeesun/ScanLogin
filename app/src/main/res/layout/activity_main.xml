@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_above="@+id/logout"
+        android:text="TextView" />
+
     <Button
         android:id="@+id/logout"
         android:layout_width="match_parent"

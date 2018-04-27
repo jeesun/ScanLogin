@@ -9,12 +9,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.simon.scanlogin.R;
 import com.simon.scanlogin.domain.LoginCode;
 import com.simon.scanlogin.domain.ResultMsg;
+import com.simon.scanlogin.domain.UserInfo;
 import com.simon.scanlogin.exception.UserNotLoginException;
 import com.simon.scanlogin.factory.RequestServesFactory;
 import com.simon.scanlogin.interfaces.RequestWithToken;
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private int REQUEST_CODE_SCAN = 111;
 
     @BindView(R.id.logout) Button btnLogout;
+
+    @BindView(R.id.info)
+    TextView tvInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
                             if (response.isSuccessful()){
                                 Log.i(TAG, response.body().toString());
+                                UserInfo userInfo = JSON.parseObject(JSON.toJSONString(response.body().getData()), UserInfo.class);
+                                tvInfo.setText(userInfo.toString());
                             }else{
                                 Log.i(TAG, response.errorBody().toString());
                             }
