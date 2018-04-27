@@ -68,49 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         String username = etUsername.getText().toString();
         String password = etPassword.getText().toString();
 
-        /*Retrofit retrofit = new Retrofit.Builder().baseUrl(AppConfig.baseUrl).addConverterFactory(GsonConverterFactory.create()).client(new OkHttpClient()).build();
-        RequestServes requestServes = retrofit.create(RequestServes.class);
-        Call<ResultMsg> call = requestServes.login(username, password);
-        call.enqueue(new Callback<ResultMsg>() {
-            @Override
-            public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
-                LogUtil.i(TAG, "code=" + response.code());
-                if (null != response.errorBody()){
-                    LogUtil.i(TAG, "" + response.errorBody().toString());
-                }
-                LogUtil.i(TAG, "response=" + response.toString());
-                LogUtil.i(TAG, "message=" + response.message());
-
-                LoginInfo loginInfo = JSON.parseObject(JSON.toJSONString(response.body().getData()), LoginInfo.class);
-                LogUtil.i(TAG, loginInfo.toString());
-
-                SharedPreferences spf = getSharedPreferences("data", MODE_PRIVATE);
-                SharedPreferences.Editor editor = spf.edit();
-                editor.putBoolean("firstLaunch", false);
-                editor.putString("access_token", loginInfo.getToken().getAccess_token());
-                editor.putString("refresh_token", loginInfo.getToken().getRefresh_token());
-                editor.putLong("date", new Date().getTime());
-                editor.putInt("expires_in", loginInfo.getToken().getExpires_in());
-                editor.putString("username", loginInfo.getUserInfo().getUsername());
-                editor.apply();
-
-                rlProgressbarWrapper.setVisibility(View.GONE);
-                //恢复用户与界面的交互
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-
-                finish();
-            }
-
-            @Override
-            public void onFailure(Call<ResultMsg> call, Throwable t) {
-                LogUtil.e(TAG, "onFailure");
-                LogUtil.e(TAG, t.getMessage());
-                LogUtil.e(TAG, t.getLocalizedMessage());
-            }
-        });*/
         OauthServes oauthServes = new ServiceGenerator(AppConfig.OAUTH_BASIC_URL).createService(OauthServes.class, "clientIdPassword", "secret");
         oauthServes.getToken("password", username, password)
                 .subscribeOn(Schedulers.io())
@@ -147,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putBoolean("firstLaunch", false);
                         editor.putString("access_token", accessToken.getAccess_token());
                         editor.putString("refresh_token", accessToken.getRefresh_token());
-                        editor.putLong("token_request_time", new Date().getTime());
+                        editor.putLong("timestamp", new Date().getTime());
                         editor.putInt("expires_in", accessToken.getExpires_in());
                         editor.apply();
 

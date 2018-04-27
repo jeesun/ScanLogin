@@ -19,9 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class ServiceGenerator {
-
-    public static final String API_BASE_URL = AppConfig.baseUrl;
-
     private OkHttpClient httpClient;
     private Retrofit.Builder builder;
 
