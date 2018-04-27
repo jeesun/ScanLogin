@@ -13,13 +13,17 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.simon.scanlogin.R;
+import com.simon.scanlogin.factory.RequestServesFactory;
 import com.simon.scanlogin.impl.RefreshToken;
+import com.simon.scanlogin.impl.RetryWithDelay;
 import com.simon.scanlogin.interfaces.OauthServes;
 import com.simon.scanlogin.interfaces.RequestServes;
 import com.simon.scanlogin.config.AppConfig;
 import com.simon.scanlogin.domain.AccessToken;
 import com.simon.scanlogin.domain.ResultMsg;
+import com.simon.scanlogin.interfaces.RequestWithToken;
 import com.simon.scanlogin.util.LogUtil;
+import com.simon.scanlogin.util.ReadWritePref;
 import com.simon.scanlogin.util.ServiceGenerator;
 
 import java.util.Date;
@@ -60,33 +64,39 @@ public class ScanLoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.check_login) void checkLogin(){
+        //RequestServes requestServes = new ServiceGenerator(AppConfig.baseUrl).createService(RequestServes.class);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                access_token = ReadWritePref.getInstance().getStr("access_token");
+                String username = ReadWritePref.getInstance().getStr("username");
 
-        SharedPreferences spf = getSharedPreferences("data", Context.MODE_PRIVATE);
-        access_token = spf.getString("access_token", "");
-        String username = "user2711";
-        RequestServes requestServes = new ServiceGenerator(AppConfig.baseUrl).createService(RequestServes.class);
-        requestServes
-                .loginByQrCode(username, access_token, sid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retryWhen(new RefreshToken(ScanLoginActivity.this))
-                .subscribe(new Subscriber<ResultMsg>() {
-                    @Override
-                    public void onCompleted() {
-                        LogUtil.i(TAG, "onCompleted");
-                    }
+                RequestServes requestServes = RequestServesFactory.getInstance().createRequest(AppConfig.baseUrl, RequestServes.class);
+                requestServes
+                        .loginByQrCode(access_token, username, sid)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retryWhen(new RetryWithDelay(3, 3000))
+                        .subscribe(new Subscriber<ResultMsg>() {
+                            @Override
+                            public void onCompleted() {
+                                LogUtil.i(TAG, "onCompleted");
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtil.i(TAG, "onError");
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                LogUtil.i(TAG, "onError");
+                            }
 
-                    @Override
-                    public void onNext(ResultMsg resultMsg) {
-                        LogUtil.i(TAG, "onNext");
-                        rlLoginWebWrapper.setVisibility(View.VISIBLE);
-                    }
-                });
+                            @Override
+                            public void onNext(ResultMsg resultMsg) {
+                                LogUtil.i(TAG, "onNext");
+                                rlLoginWebWrapper.setVisibility(View.VISIBLE);
+                            }
+                        });
+            }
+        }).start();
+
     }
 
     @OnClick(R.id.cancel_login) void cancelLogin(){

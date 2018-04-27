@@ -13,8 +13,8 @@ import rx.Observable;
 public interface RequestServes {
     //app扫描网页二维码登录
     @POST("/api/qrCodes/loginByQrCode")
-    Observable<ResultMsg> loginByQrCode(@Query("username")String username,
-                                        @Query("access_token")String access_token,
+    Observable<ResultMsg> loginByQrCode(@Query("access_token")String access_token,
+                                        @Query("username")String username,
                                         @Query("sid")String sid);
 
     //账号密码登录
