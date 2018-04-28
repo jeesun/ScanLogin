@@ -9,6 +9,7 @@ import com.simon.scanlogin.config.AppConfig;
 import com.simon.scanlogin.domain.AccessToken;
 import com.simon.scanlogin.domain.InvalidToken;
 import com.simon.scanlogin.exception.NoNetworkException;
+import com.simon.scanlogin.exception.UserNotLoginException;
 import com.simon.scanlogin.interfaces.OauthServesCall;
 import com.simon.scanlogin.util.CheckTokenIsValid;
 import com.simon.scanlogin.util.LogUtil;
@@ -19,6 +20,10 @@ import com.simon.scanlogin.util.ServiceGenerator;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -32,7 +37,7 @@ import retrofit2.Response;
  * Proxy.getProxyInstance3个参数的第一个参数是被代理的类
  */
 public class ProxyHandler implements InvocationHandler {
-    private static final String TAG = ProgressBar.class.getName();
+    private static final String TAG = ProxyHandler.class.getName();
 
     private Object target;
 
@@ -42,8 +47,8 @@ public class ProxyHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
+        LogUtil.i(TAG, "invoke start");
         Object result = method.invoke(target, args);
-        Log.e(TAG, "before");
         //1、首先从SharedPreferences读取access_token和refresh_token。
         //2、发现为空，则跳转到登录页面。
         //3、有值（只要有值，两个值必然都非空），检查access_token。
@@ -57,35 +62,51 @@ public class ProxyHandler implements InvocationHandler {
             throw new NoNetworkException("已断开网络连接");
         }
         String access_token = args[0].toString();
-        LogUtil.e(TAG, "args[0]=" + args[0].toString());
+        LogUtil.i(TAG, "args[0]=" + args[0].toString());
         if (!CheckTokenIsValid.isValid(access_token)){
-            LogUtil.e(TAG, "invalid access_token");
-            String refresh_token = ReadWritePref.getInstance().getStr("refresh_token");
+            ExecutorService executor = Executors.newCachedThreadPool();
+            Future future = executor.submit(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    LogUtil.e(TAG, "invalid access_token");
+                    String refresh_token = ReadWritePref.getInstance().getStr("refresh_token");
 
-            OauthServesCall requestServes = new ServiceGenerator(AppConfig.OAUTH_BASIC_URL).createService(OauthServesCall.class, "clientIdPassword", "secret");
-            Call<AccessToken> call = requestServes
-                    .getToken("refresh_token", refresh_token);
-            try {
-                Response<AccessToken> response = call.execute();
-                if(response.isSuccessful()){
-                    AccessToken accessToken = response.body();
-                    ReadWritePref.getInstance().put("access_token", accessToken.getAccess_token());
-                    ReadWritePref.getInstance().put("timestamp", System.currentTimeMillis());
-                    ReadWritePref.getInstance().put("expires_in", accessToken.getExpires_in());
-                    LogUtil.e(TAG, "after=" + accessToken.getAccess_token());
+                    OauthServesCall requestServes = new ServiceGenerator(AppConfig.OAUTH_BASIC_URL).createService(OauthServesCall.class, "clientIdPassword", "secret");
+                    Call<AccessToken> call = requestServes
+                            .getToken("refresh_token", refresh_token);
+                    try {
+                        Response<AccessToken> response = call.execute();
+                        if(response.isSuccessful()){
+                            AccessToken accessToken = response.body();
+                            ReadWritePref.getInstance().put("access_token", accessToken.getAccess_token());
+                            ReadWritePref.getInstance().put("timestamp", System.currentTimeMillis());
+                            ReadWritePref.getInstance().put("expires_in", accessToken.getExpires_in());
+                            return accessToken;
+                        }else if(null!=response.errorBody()){
+                            InvalidToken invalidToken = JSON.parseObject(response.errorBody().string(), InvalidToken.class);
+                            LogUtil.e(TAG, invalidToken.getError_description());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        LogUtil.i(TAG, "IOException:"+e.getMessage());
+                    }
+                    return null;
+                }
+            });
+            if (future.isDone()){
+                AccessToken accessToken = (AccessToken) future.get();
+                if(null != access_token){
+                    LogUtil.i(TAG, "new token=" + accessToken.getAccess_token());
                     args[0] = accessToken.getAccess_token();
                     result = method.invoke(target, args);
-                }else if(null!=response.errorBody()){
-                    InvalidToken invalidToken = JSON.parseObject(response.errorBody().string(), InvalidToken.class);
-                    LogUtil.e(TAG, invalidToken.getError_description());
+                }else{
+                    LogUtil.e(TAG, "accessToken is null");
+                    throw new UserNotLoginException();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                LogUtil.i(TAG, "IOException:"+e.getMessage());
+                executor.shutdown();
             }
-
         }
-        Log.e(TAG, "after");
+        LogUtil.i(TAG, "invoke end");
         return result;
     }
 }
