@@ -64,39 +64,32 @@ public class ScanLoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.check_login) void checkLogin(){
-        //RequestServes requestServes = new ServiceGenerator(AppConfig.baseUrl).createService(RequestServes.class);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                access_token = ReadWritePref.getInstance().getStr("access_token");
-                String username = ReadWritePref.getInstance().getStr("username");
+        access_token = ReadWritePref.getInstance().getStr("access_token");
+        String username = ReadWritePref.getInstance().getStr("username");
 
-                RequestServes requestServes = RequestServesFactory.getInstance().createRequest(AppConfig.baseUrl, RequestServes.class);
-                requestServes
-                        .loginByQrCode(access_token, username, sid)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .retryWhen(new RetryWithDelay(3, 3000))
-                        .subscribe(new Subscriber<ResultMsg>() {
-                            @Override
-                            public void onCompleted() {
-                                LogUtil.i(TAG, "onCompleted");
-                            }
+        RequestServes requestServes = RequestServesFactory.getInstance().createRequest(AppConfig.baseUrl, RequestServes.class);
+        requestServes
+                .loginByQrCode(access_token, username, sid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWithDelay(3, 3000))
+                .subscribe(new Subscriber<ResultMsg>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.i(TAG, "onCompleted");
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                LogUtil.i(TAG, "onError");
-                            }
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtil.i(TAG, "onError");
+                    }
 
-                            @Override
-                            public void onNext(ResultMsg resultMsg) {
-                                LogUtil.i(TAG, "onNext");
-                                rlLoginWebWrapper.setVisibility(View.VISIBLE);
-                            }
-                        });
-            }
-        }).start();
-
+                    @Override
+                    public void onNext(ResultMsg resultMsg) {
+                        LogUtil.i(TAG, "onNext");
+                        rlLoginWebWrapper.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     @OnClick(R.id.cancel_login) void cancelLogin(){

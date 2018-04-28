@@ -129,48 +129,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.get_user_info) void getUserInfo(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestWithToken requestServes = RequestServesFactory.getInstance().createRequest(RequestWithToken.class);
-                try {
-                    Call<ResultMsg> call = requestServes.getUser(ReadWritePref.getInstance().getStr("access_token"));
-                    call.enqueue(new Callback<ResultMsg>() {
-                        @Override
-                        public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
-                            if (response.isSuccessful()){
-                                Log.i(TAG, response.body().toString());
-                                UserInfo userInfo = JSON.parseObject(JSON.toJSONString(response.body().getData()), UserInfo.class);
-                                if(null != userInfo){
-                                    tvInfo.setText(userInfo.toString());
-                                    ReadWritePref.getInstance().put("username", userInfo.getUsername());
-                                }
-                            }else{
-                                Log.i(TAG, response.errorBody().toString());
-                            }
+        RequestWithToken requestServes = RequestServesFactory.getInstance().createRequest(RequestWithToken.class);
+        try {
+            Call<ResultMsg> call = requestServes.getUser(ReadWritePref.getInstance().getStr("access_token"));
+            call.enqueue(new Callback<ResultMsg>() {
+                @Override
+                public void onResponse(Call<ResultMsg> call, Response<ResultMsg> response) {
+                    if (response.isSuccessful()){
+                        Log.i(TAG, response.body().toString());
+                        UserInfo userInfo = JSON.parseObject(JSON.toJSONString(response.body().getData()), UserInfo.class);
+                        if(null != userInfo){
+                            tvInfo.setText(userInfo.toString());
+                            ReadWritePref.getInstance().put("username", userInfo.getUsername());
                         }
-
-                        @Override
-                        public void onFailure(Call<ResultMsg> call, Throwable t) {
-                            Log.i(TAG, t.toString());
-                        }
-                    });
-                } catch (UserNotLoginException e) {
-                    e.printStackTrace();
-                    LogUtil.e(TAG, e.getMessage());
-                    Looper.prepare();
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                } catch (NoNetworkException e) {
-                    e.printStackTrace();
-                    LogUtil.e(TAG, e.getMessage());
-                    Looper.prepare();
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+                    }else{
+                        Log.i(TAG, response.errorBody().toString());
+                    }
                 }
-            }
-        }).start();
+
+                @Override
+                public void onFailure(Call<ResultMsg> call, Throwable t) {
+                    Log.i(TAG, t.toString());
+                }
+            });
+        } catch (UserNotLoginException e) {
+            e.printStackTrace();
+            LogUtil.e(TAG, e.getMessage());
+            Looper.prepare();
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        } catch (NoNetworkException e) {
+            e.printStackTrace();
+            LogUtil.e(TAG, e.getMessage());
+            Looper.prepare();
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
     }
 }
